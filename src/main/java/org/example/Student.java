@@ -58,6 +58,6 @@ public class Student {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", dob=" + dob +
-                '}';
+                '}' + '\n';
     }
 }

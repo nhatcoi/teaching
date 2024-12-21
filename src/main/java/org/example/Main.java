@@ -64,7 +64,10 @@ public class Main {
 
         System.out.println("Menu");
         System.out.println("1. Them Sinh vien");
-        System.out.println("2. ");
+        System.out.println("2. Danh sach sinh vien");
+        System.out.println("3. Tim kiem sinh vien");
+        System.out.println("4. Sua sinh vien");
+        System.out.println("5. Xoa sinh vien");
 
         Scanner scanner = new Scanner(System.in);
         int option;
@@ -72,7 +75,34 @@ public class Main {
         option = scanner.nextInt();
 
         switch (option) {
-            case 1:
+            case 1: {
+                Student newStudent = new Student();
+                System.out.print("Ten sinh vien: ");
+                String name = scanner.nextLine();
+                newStudent.setName(name);
+                scanner.nextLine();
+
+                System.out.print("Email sinh vien: ");
+                String email = scanner.nextLine();
+                newStudent.setEmail(email);
+                System.out.print("Ngay sinh: ");
+
+                String dateString = scanner.nextLine();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                Date dateOfBirth = Date.valueOf(LocalDate.parse(dateString, formatter));
+                newStudent.setDob(dateOfBirth);
+
+                studentService.addStudent(newStudent);
+                break;
+            }
+
+            case 2: {
+                System.out.println("Danh sach sinh vien:");
+                System.out.println(studentService.getAllStudents());
+                break;
+            }
+
+
         }
 
 
