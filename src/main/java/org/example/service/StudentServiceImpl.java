@@ -217,4 +217,47 @@ public class StudentServiceImpl implements StudentService {
         return null;
     }
 
+    @Override
+    public List<Student> searchStudents(String name, String email) throws SQLException {
+        List<Student> students = new ArrayList<>();
+        StringBuilder query = new StringBuilder("SELECT * FROM students WHERE 1=1");
+
+        // Nếu tên được nhập, thêm điều kiện tìm kiếm tên
+        if (name != null && !name.isEmpty()) {
+            query.append(" AND name LIKE ?");
+        }
+
+        // Nếu email được nhập, thêm điều kiện tìm kiếm email
+        if (email != null && !email.isEmpty()) {
+            query.append(" AND email LIKE ?");
+        }
+
+        try (PreparedStatement stmt = connection.prepareStatement(query.toString())) {
+
+            int index = 1;
+            // Nếu có tên, set parameter cho tên
+            if (name != null && !name.isEmpty()) {
+                stmt.setString(index++, "%" + name + "%");
+            }
+
+            // Nếu có email, set parameter cho email
+            if (email != null && !email.isEmpty()) {
+                stmt.setString(index, "%" + email + "%");
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Student student = new Student(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getString("email"),
+                            rs.getDate("dob").toLocalDate()
+                    );
+                    students.add(student);
+                }
+            }
+        }
+        return students;
+    }
+
 }

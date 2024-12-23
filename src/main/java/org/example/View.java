@@ -33,6 +33,7 @@ public class View {
             System.out.println("7. Quản lý sách");
             System.out.println("8. Phân trang học viên");
             System.out.println("9. Thống kê học viên");
+            System.out.println("10. Tìm kiếm động - Seach Engine");
             System.out.println("0. Thoát");
             System.out.print("Chọn chức năng: ");
             int choice = scanner.nextInt();
@@ -64,6 +65,43 @@ public class View {
                     break;
                 case 9:
                     statisticalStudent();
+                    break;
+                case 10:
+                    searchStudents();
+                    break;
+                case 0:
+                    System.out.println("Thoát chương trình.");
+                    return;
+                default:
+                    System.out.println("Lựa chọn không hợp lệ.");
+            }
+        }
+    }
+
+    // bài 9
+    public void searchStudents() throws SQLException {
+        while (true) {
+            System.out.println("\n=== QUẢN LÝ HỌC VIÊN ===");
+            System.out.println("1. Tìm kiếm học viên theo tên hoặc email");
+            System.out.println("0. Thoát");
+            System.out.print("Chọn chức năng: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Nhập tên học viên (hoặc phần tên): ");
+                    String name = scanner.nextLine();
+                    System.out.print("Nhập email học viên (hoặc phần email): ");
+                    String email = scanner.nextLine();
+
+                    List<Student> foundStudents = studentService.searchStudents(name, email);
+                    if (foundStudents.isEmpty()) {
+                        System.out.println("Không tìm thấy học viên nào.");
+                    } else {
+                        System.out.println("Kết quả tìm kiếm:");
+                        foundStudents.forEach(System.out::println);
+                    }
                     break;
                 case 0:
                     System.out.println("Thoát chương trình.");

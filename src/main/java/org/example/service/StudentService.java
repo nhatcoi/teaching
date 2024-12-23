@@ -34,4 +34,7 @@ public interface StudentService {
     Student getStudentWithMinDOB() throws SQLException;
 
     Student getStudentWithMaxDOB() throws SQLException;
+
+    // bài 9 - tìm kiếm động
+    List<Student> searchStudents(String name, String email) throws SQLException;
 }
