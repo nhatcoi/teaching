@@ -92,4 +92,27 @@ public class StudentServiceImpl implements StudentService {
     }
 
 
+
+    // update
+
+    @Override
+    public void updateStudentEmail(int id, String newEmail) {
+        String sql = "UPDATE students SET email = ? WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, newEmail);
+            statement.setInt(2, id);
+
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Cập nhật email thành công!");
+            } else {
+                System.out.println("Không tìm thấy học viên với ID đã nhập.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 }

@@ -58,6 +58,14 @@ public class Main {
                     studentService.getStudentsSortedByDOB().forEach(System.out::println);
                     break;
                 case 5:
+                    System.out.print("Nhập ID học viên: ");
+                    int id = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline
+                    System.out.print("Nhập email mới: ");
+                    String newEmail = scanner.nextLine();
+                    studentService.updateStudentEmail(id, newEmail);
+                    break;
+                case 6:
                     System.out.println("Thoát chương trình.");
                     return;
                 default:

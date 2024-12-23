@@ -16,8 +16,8 @@ public interface StudentService {
     List<Student> getStudentsByName(String keyword);
     List<Student> getStudentsSortedByDOB();
 
-//    // update student
-//    void updateStudentEmail(int id, String newEmail);
+    // update student
+    void updateStudentEmail(int id, String newEmail);
 //
 //    // delete student
 //    void deleteStudent(int id);
