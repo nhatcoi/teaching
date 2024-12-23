@@ -3,6 +3,7 @@ package org.example;
 import org.example.model.Book;
 import org.example.model.Student;
 import org.example.service.BookService;
+import org.example.service.RentBookService;
 import org.example.service.StudentService;
 
 import java.sql.SQLException;
@@ -14,10 +15,12 @@ public class View {
     private final Scanner scanner;
     private final StudentService studentService;
     private final BookService bookService;
+    private final RentBookService rentBookService;
 
-    public View(StudentService studentService, BookService bookService) {
+    public View(StudentService studentService, BookService bookService, RentBookService rentBookService) {
         this.studentService = studentService;
         this.bookService = bookService;
+        this.rentBookService = rentBookService;
         this.scanner = new Scanner(System.in);
     }
 
@@ -34,6 +37,7 @@ public class View {
             System.out.println("8. Phân trang học viên");
             System.out.println("9. Thống kê học viên");
             System.out.println("10. Tìm kiếm động - Seach Engine");
+            System.out.println("11. Mượn sách");
             System.out.println("0. Thoát");
             System.out.print("Chọn chức năng: ");
             int choice = scanner.nextInt();
@@ -69,6 +73,9 @@ public class View {
                 case 10:
                     searchStudents();
                     break;
+                case 11:
+                    setRentBookService();
+                    break;
                 case 0:
                     System.out.println("Thoát chương trình.");
                     return;
@@ -77,6 +84,75 @@ public class View {
             }
         }
     }
+
+    // bài 10
+   public void setRentBookService() {
+       while (true) {
+           System.out.println("\n=== QUẢN LÝ ĐĂNG KÝ MƯỢN SÁCH ===");
+           System.out.println("1. Mượn sách cho học viên");
+           System.out.println("2. Hiển thị sách đã mượn của học viên");
+           System.out.println("3. Cập nhật ngày mượn sách");
+           System.out.println("0. Thoát");
+           System.out.print("Chọn chức năng: ");
+           int choice = scanner.nextInt();
+
+           switch (choice) {
+               case 1:
+                   System.out.print("Nhập ID học viên: ");
+                   int studentId = scanner.nextInt();
+                   System.out.print("Nhập ID sách: ");
+                   int bookId = scanner.nextInt();
+                   scanner.nextLine(); // Consume newline
+                   System.out.print("Nhập ngày mượn sách (yyyy-mm-dd): ");
+                   LocalDate rentDate = LocalDate.parse(scanner.nextLine());
+
+                   try {
+                       rentBookService.rentBook(studentId, bookId, rentDate);
+                       System.out.println("Mượn sách thành công!");
+                   } catch (SQLException e) {
+                       e.printStackTrace();
+                       System.out.println("Lỗi khi mượn sách.");
+                   }
+                   break;
+               case 2:
+                   System.out.print("Nhập ID học viên để xem sách đã mượn: ");
+                   int studentIdToView = scanner.nextInt();
+                   try {
+                       List<String> rentedBooks = rentBookService.getRentedBooksByStudent(studentIdToView);
+                       if (rentedBooks.isEmpty()) {
+                           System.out.println("Học viên chưa mượn sách nào.");
+                       } else {
+                           System.out.println("Danh sách sách học viên đã mượn:");
+                           rentedBooks.forEach(System.out::println);
+                       }
+                   } catch (SQLException e) {
+                       e.printStackTrace();
+                       System.out.println("Lỗi khi lấy thông tin sách đã mượn.");
+                   }
+                   break;
+               case 3:
+                   System.out.print("Nhập ID đơn mượn cần cập nhật: ");
+                   int rentId = scanner.nextInt();
+                   scanner.nextLine(); // Consume newline
+                   System.out.print("Nhập ngày mượn mới (yyyy-mm-dd): ");
+                   LocalDate newRentDate = LocalDate.parse(scanner.nextLine());
+
+                   try {
+                       rentBookService.updateRentDate(rentId, newRentDate);
+                       System.out.println("Cập nhật ngày mượn sách thành công!");
+                   } catch (SQLException e) {
+                       e.printStackTrace();
+                       System.out.println("Lỗi khi cập nhật ngày mượn sách.");
+                   }
+                   break;
+               case 0:
+                   System.out.println("Thoát chương trình.");
+                   return;
+               default:
+                   System.out.println("Lựa chọn không hợp lệ.");
+           }
+       }
+   }
 
     // bài 9
     public void searchStudents() throws SQLException {

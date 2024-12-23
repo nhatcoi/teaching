@@ -1,9 +1,6 @@
 package org.example;
 
-import org.example.service.BookService;
-import org.example.service.BookServiceImpl;
-import org.example.service.StudentService;
-import org.example.service.StudentServiceImpl;
+import org.example.service.*;
 
 import java.sql.*;
 
@@ -12,9 +9,10 @@ public class Main {
         // Inject StudentService và BookService vào Main
         StudentService studentService = new StudentServiceImpl();
         BookService bookService = new BookServiceImpl();
+        RentBookService rentBookService = new RentBookServiceImpl();
 
         // Tạo đối tượng View và gọi phương thức hiển thị menu chính
-        View view = new View(studentService, bookService);
+        View view = new View(studentService, bookService, rentBookService);
         view.showMainMenu();
     }
 }

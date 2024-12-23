@@ -16,6 +16,28 @@ create table students
     dob   datetime     null
 );
 
+create table rents
+(
+    id         int auto_increment
+        primary key,
+    student_id int  null,
+    book_id    int  null,
+    rent_date  date null,
+    constraint rents_ibfk_1
+        foreign key (student_id) references students (id)
+            on delete cascade,
+    constraint rents_ibfk_2
+        foreign key (book_id) references books (id)
+            on delete cascade
+);
+
+create index book_id
+    on rents (book_id);
+
+create index student_id
+    on rents (student_id);
+
+
 
 -- Dữ liệu mẫu cho students ---------------------------------------------------------------
 INSERT INTO students (name, email, dob)
