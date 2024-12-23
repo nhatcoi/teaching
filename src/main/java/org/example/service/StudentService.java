@@ -23,7 +23,15 @@ public interface StudentService {
     // delete student
     void deleteStudent(int id);
 
+    // bài 7 - phân trang học viên
     List<Student> getStudentsByPagination(int page, int pageSize) throws SQLException;
 
     int getTotalPages(int pageSize) throws SQLException;
+
+    // bài 8 - thống kê học viên
+    int getStudentCount() throws SQLException;
+
+    Student getStudentWithMinDOB() throws SQLException;
+
+    Student getStudentWithMaxDOB() throws SQLException;
 }

@@ -170,4 +170,51 @@ public class StudentServiceImpl implements StudentService {
         return 0;
     }
 
+
+    @Override
+    public int getStudentCount() throws SQLException {
+        String query = "SELECT COUNT(*) FROM students";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public Student getStudentWithMinDOB() throws SQLException {
+        String query = "SELECT * FROM students ORDER BY dob ASC LIMIT 1";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            if (rs.next()) {
+                return new Student(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getDate("dob").toLocalDate()
+                );
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Student getStudentWithMaxDOB() throws SQLException {
+        String query = "SELECT * FROM students ORDER BY dob DESC LIMIT 1";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            if (rs.next()) {
+                return new Student(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getDate("dob").toLocalDate()
+                );
+            }
+        }
+        return null;
+    }
+
 }

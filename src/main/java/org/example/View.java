@@ -32,6 +32,7 @@ public class View {
             System.out.println("6. Xóa học viên");
             System.out.println("7. Quản lý sách");
             System.out.println("8. Phân trang học viên");
+            System.out.println("9. Thống kê học viên");
             System.out.println("0. Thoát");
             System.out.print("Chọn chức năng: ");
             int choice = scanner.nextInt();
@@ -61,6 +62,9 @@ public class View {
                 case 8:
                     getStudentsByPagination();
                     break;
+                case 9:
+                    statisticalStudent();
+                    break;
                 case 0:
                     System.out.println("Thoát chương trình.");
                     return;
@@ -69,6 +73,50 @@ public class View {
             }
         }
     }
+
+
+    // bài 8
+    public void statisticalStudent() throws SQLException {
+        while (true) {
+            System.out.println("\n=== THỐNG KÊ HỌC VIÊN ===");
+            System.out.println("1. Đếm số lượng học viên");
+            System.out.println("2. Hiển thị học viên có ngày sinh nhỏ nhất");
+            System.out.println("3. Hiển thị học viên có ngày sinh lớn nhất");
+            System.out.println("0. Thoát");
+            System.out.print("Chọn chức năng: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    int count = studentService.getStudentCount();
+                    System.out.println("Số lượng học viên: " + count);
+                    break;
+                case 2:
+                    Student minDOBStudent = studentService.getStudentWithMinDOB();
+                    if (minDOBStudent != null) {
+                        System.out.println("Học viên có ngày sinh nhỏ nhất: " + minDOBStudent);
+                    } else {
+                        System.out.println("Không tìm thấy học viên.");
+                    }
+                    break;
+                case 3:
+                    Student maxDOBStudent = studentService.getStudentWithMaxDOB();
+                    if (maxDOBStudent != null) {
+                        System.out.println("Học viên có ngày sinh lớn nhất: " + maxDOBStudent);
+                    } else {
+                        System.out.println("Không tìm thấy học viên.");
+                    }
+                    break;
+                case 0:
+                    System.out.println("Thoát chương trình.");
+                    return;
+                default:
+                    System.out.println("Lựa chọn không hợp lệ.");
+            }
+        }
+    }
+
+
 
     public void getStudentsByPagination() throws SQLException {
         final int PAGE_SIZE = 5;
