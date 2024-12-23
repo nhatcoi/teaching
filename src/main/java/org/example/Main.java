@@ -19,10 +19,12 @@ public class Main {
         while (true) {
             System.out.println("\n=== QUẢN LÝ HỌC VIÊN ===");
             System.out.println("1. Thêm học viên");
-            System.out.println("2. Hiển thị danh sách học viên");
-            System.out.println("3. Cập nhật email học viên");
-            System.out.println("4. Xóa học viên");
-            System.out.println("5. Thoát");
+            System.out.println("2. Hiển toàn bộ thị danh sách học viên");
+            System.out.println("3. Tìm học viên theo tên");
+            System.out.println("4. Danh sách học viên theo thứ tự tăng dần");
+            System.out.println("5. Cập nhật email học viên");
+            System.out.println("6. Xóa học viên");
+            System.out.println("7. Thoát");
             System.out.print("Chọn chức năng: ");
             int choice = scanner.nextInt();
 
@@ -37,15 +39,23 @@ public class Main {
                     LocalDate dob = LocalDate.parse(scanner.nextLine());
                     Student student = new Student(name, email, dob);
                     studentService.insertStudent(student);
+
                     break;
                 case 2:
+                    System.out.println("=== Toàn bộ danh sách học viên ===");
+                    studentService.getAllStudents().forEach(System.out::println);
 
                     break;
                 case 3:
-
+                    scanner.nextLine();
+                    System.out.println("Nhập tên cần tìm: ");
+                    String keyword = scanner.nextLine();
+                    System.out.println("\n=== Học viên có tên chứa '" + keyword + "' ===");
+                    studentService.getStudentsByName(keyword).forEach(System.out::println);
                     break;
                 case 4:
-
+                    System.out.println("\n=== Danh sách học viên theo ngày sinh tăng dần ===");
+                    studentService.getStudentsSortedByDOB().forEach(System.out::println);
                     break;
                 case 5:
                     System.out.println("Thoát chương trình.");
@@ -54,6 +64,5 @@ public class Main {
                     System.out.println("Lựa chọn không hợp lệ.");
             }
         }
-
     }
 }
