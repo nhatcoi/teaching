@@ -113,6 +113,22 @@ public class StudentServiceImpl implements StudentService {
         }
     }
 
+    @Override
+    public void deleteStudent(int id) {
+        String sql = "DELETE FROM students WHERE id = ?";
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
+            statement.setInt(1, id);
+            int rowsDeleted = statement.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Xóa học viên thành công!");
+            } else {
+                System.out.println("Không tìm thấy học viên với ID đã nhập.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

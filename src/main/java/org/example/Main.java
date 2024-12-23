@@ -66,6 +66,17 @@ public class Main {
                     studentService.updateStudentEmail(id, newEmail);
                     break;
                 case 6:
+                    System.out.print("Nhập ID học viên cần xóa: ");
+                    int deleteId = scanner.nextInt();
+                    System.out.println("Bạn có muốn xoá học viên có ID = " + deleteId + " không? (Y/N)");
+                    scanner.nextLine(); // Consume newline
+                    String confirm = scanner.nextLine();
+                    if (confirm.equalsIgnoreCase("Y"))
+                        studentService.deleteStudent(deleteId);
+                    else
+                        System.out.println("Không xoá học viên nào.");
+                    break;
+                case 7:
                     System.out.println("Thoát chương trình.");
                     return;
                 default:
