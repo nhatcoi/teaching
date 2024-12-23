@@ -5,7 +5,9 @@ import org.example.model.Student;
 import org.example.service.BookService;
 import org.example.service.StudentService;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Scanner;
 
 public class View {
@@ -19,7 +21,7 @@ public class View {
         this.scanner = new Scanner(System.in);
     }
 
-    public void showMainMenu() {
+    public void showMainMenu() throws SQLException {
         while (true) {
             System.out.println("\n=== QUẢN LÝ HỌC VIÊN ===");
             System.out.println("1. Thêm học viên");
@@ -29,6 +31,7 @@ public class View {
             System.out.println("5. Cập nhật email học viên");
             System.out.println("6. Xóa học viên");
             System.out.println("7. Quản lý sách");
+            System.out.println("8. Phân trang học viên");
             System.out.println("0. Thoát");
             System.out.print("Chọn chức năng: ");
             int choice = scanner.nextInt();
@@ -54,6 +57,59 @@ public class View {
                     break;
                 case 7:
                     showBookManagement();
+                    break;
+                case 8:
+                    getStudentsByPagination();
+                    break;
+                case 0:
+                    System.out.println("Thoát chương trình.");
+                    return;
+                default:
+                    System.out.println("Lựa chọn không hợp lệ.");
+            }
+        }
+    }
+
+    public void getStudentsByPagination() throws SQLException {
+        final int PAGE_SIZE = 5;
+        int currentPage = 1;
+
+        while (true) {
+            int totalPages = studentService.getTotalPages(PAGE_SIZE);
+            System.out.println("\n=== Danh sách học viên ===");
+            List<Student> students = studentService.getStudentsByPagination(currentPage, PAGE_SIZE);
+            students.forEach(System.out::println);
+
+            System.out.println("\nTrang " + currentPage + " / " + totalPages);
+
+            System.out.println("\n1. Trang trước");
+            System.out.println("2. Trang tiếp theo");
+            System.out.println("3. Chọn trang số...");
+            System.out.println("0. Thoát");
+
+            System.out.print("Chọn chức năng: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    if (currentPage > 1) {
+                        currentPage--;
+                    }
+                    break;
+                case 2:
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                    }
+                    break;
+
+                case 3:
+                    System.out.print("Nhập số trang muốn xem (1 đến " + totalPages + "): ");
+                    int pageInput = scanner.nextInt();
+                    if (pageInput >= 1 && pageInput <= totalPages) {
+                        currentPage = pageInput;
+                    } else {
+                        System.out.println("Số trang không hợp lệ.");
+                    }
                     break;
                 case 0:
                     System.out.println("Thoát chương trình.");

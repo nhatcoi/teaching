@@ -4,6 +4,7 @@ import org.example.DBConnection;
 import org.example.model.Student;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,6 +130,44 @@ public class StudentServiceImpl implements StudentService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+
+
+
+
+    @Override
+    public List<Student> getStudentsByPagination(int page, int pageSize) throws SQLException {
+        List<Student> students = new ArrayList<>();
+        int offset = (page - 1) * pageSize;
+
+        String query = "SELECT * FROM students LIMIT ? OFFSET ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, pageSize);
+            stmt.setInt(2, offset);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                LocalDate dob = rs.getDate("dob").toLocalDate();
+                students.add(new Student(id, name, email, dob));
+            }
+        }
+        return students;
+    }
+
+    @Override
+    public int getTotalPages(int pageSize) throws SQLException {
+        String countQuery = "SELECT COUNT(*) FROM students";
+        try (Statement stmt = connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery(countQuery);
+            if (rs.next()) {
+                int totalStudents = rs.getInt(1);
+                return (int) Math.ceil((double) totalStudents / pageSize);
+            }
+        }
+        return 0;
     }
 
 }

@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.model.Student;
 
+import java.sql.SQLException;
 import java.util.List;
 
 // interface StudentService thể hiện trừu tượng hóa các phương thức CRUD
@@ -21,4 +22,8 @@ public interface StudentService {
 
     // delete student
     void deleteStudent(int id);
+
+    List<Student> getStudentsByPagination(int page, int pageSize) throws SQLException;
+
+    int getTotalPages(int pageSize) throws SQLException;
 }
