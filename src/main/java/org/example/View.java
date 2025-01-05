@@ -1,28 +1,24 @@
 package org.example;
 
-import org.example.model.Book;
-import org.example.model.Student;
-import org.example.service.BookService;
-import org.example.service.RentBookService;
-import org.example.service.StudentService;
+import org.example.controller.BookController;
+import org.example.controller.RentBookController;
+import org.example.controller.StudentController;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Scanner;
 
 public class View {
-    private final Scanner scanner;
-    private final StudentService studentService;
-    private final BookService bookService;
-    private final RentBookService rentBookService;
+    private final Scanner scanner = new Scanner(System.in);
+    private final StudentController studentController;
+    private final BookController bookController;
+    private final RentBookController rentBookController;
 
-    public View(StudentService studentService, BookService bookService, RentBookService rentBookService) {
-        this.studentService = studentService;
-        this.bookService = bookService;
-        this.rentBookService = rentBookService;
-        this.scanner = new Scanner(System.in);
+    public View(StudentController studentController, BookController bookController, RentBookController rentBookController) {
+        this.studentController = studentController;
+        this.bookController = bookController;
+        this.rentBookController = rentBookController;
     }
+
 
     public void showMainMenu() throws SQLException {
         while (true) {
@@ -44,34 +40,34 @@ public class View {
 
             switch (choice) {
                 case 1:
-                    addStudent();
+                    studentController.addStudent();
                     break;
                 case 2:
-                    displayAllStudents();
+                    studentController.displayAllStudents();
                     break;
                 case 3:
-                    searchStudentByName();
+                    studentController.searchStudentByName();
                     break;
                 case 4:
-                    displayStudentsSortedByDOB();
+                    studentController.displayStudentsSortedByDOB();
                     break;
                 case 5:
-                    updateStudentEmail();
+                    studentController.updateStudentEmail();
                     break;
                 case 6:
-                    deleteStudent();
+                    studentController.deleteStudent();
                     break;
                 case 7:
-                    showBookManagement();
+                    bookManagementView();
                     break;
                 case 8:
-                    getStudentsByPagination();
+                    studentController.getStudentsByPagination();
                     break;
                 case 9:
-                    statisticalStudent();
+                    statisticalStudentView();
                     break;
                 case 10:
-                    searchStudents();
+                    studentController.searchStudents();
                     break;
                 case 11:
                     setRentBookService();
@@ -86,98 +82,25 @@ public class View {
     }
 
     // bài 10
-   public void setRentBookService() {
-       while (true) {
-           System.out.println("\n=== QUẢN LÝ ĐĂNG KÝ MƯỢN SÁCH ===");
-           System.out.println("1. Mượn sách cho học viên");
-           System.out.println("2. Hiển thị sách đã mượn của học viên");
-           System.out.println("3. Cập nhật ngày mượn sách");
-           System.out.println("0. Thoát");
-           System.out.print("Chọn chức năng: ");
-           int choice = scanner.nextInt();
-
-           switch (choice) {
-               case 1:
-                   System.out.print("Nhập ID học viên: ");
-                   int studentId = scanner.nextInt();
-                   System.out.print("Nhập ID sách: ");
-                   int bookId = scanner.nextInt();
-                   scanner.nextLine(); // Consume newline
-                   System.out.print("Nhập ngày mượn sách (yyyy-mm-dd): ");
-                   LocalDate rentDate = LocalDate.parse(scanner.nextLine());
-
-                   try {
-                       rentBookService.rentBook(studentId, bookId, rentDate);
-                       System.out.println("Mượn sách thành công!");
-                   } catch (SQLException e) {
-                       e.printStackTrace();
-                       System.out.println("Lỗi khi mượn sách.");
-                   }
-                   break;
-               case 2:
-                   System.out.print("Nhập ID học viên để xem sách đã mượn: ");
-                   int studentIdToView = scanner.nextInt();
-                   try {
-                       List<String> rentedBooks = rentBookService.getRentedBooksByStudent(studentIdToView);
-                       if (rentedBooks.isEmpty()) {
-                           System.out.println("Học viên chưa mượn sách nào.");
-                       } else {
-                           System.out.println("Danh sách sách học viên đã mượn:");
-                           rentedBooks.forEach(System.out::println);
-                       }
-                   } catch (SQLException e) {
-                       e.printStackTrace();
-                       System.out.println("Lỗi khi lấy thông tin sách đã mượn.");
-                   }
-                   break;
-               case 3:
-                   System.out.print("Nhập ID đơn mượn cần cập nhật: ");
-                   int rentId = scanner.nextInt();
-                   scanner.nextLine(); // Consume newline
-                   System.out.print("Nhập ngày mượn mới (yyyy-mm-dd): ");
-                   LocalDate newRentDate = LocalDate.parse(scanner.nextLine());
-
-                   try {
-                       rentBookService.updateRentDate(rentId, newRentDate);
-                       System.out.println("Cập nhật ngày mượn sách thành công!");
-                   } catch (SQLException e) {
-                       e.printStackTrace();
-                       System.out.println("Lỗi khi cập nhật ngày mượn sách.");
-                   }
-                   break;
-               case 0:
-                   System.out.println("Thoát chương trình.");
-                   return;
-               default:
-                   System.out.println("Lựa chọn không hợp lệ.");
-           }
-       }
-   }
-
-    // bài 9
-    public void searchStudents() throws SQLException {
+    private void setRentBookService() {
         while (true) {
-            System.out.println("\n=== QUẢN LÝ HỌC VIÊN ===");
-            System.out.println("1. Tìm kiếm học viên theo tên hoặc email");
+            System.out.println("\n=== QUẢN LÝ ĐĂNG KÝ MƯỢN SÁCH ===");
+            System.out.println("1. Mượn sách cho học viên");
+            System.out.println("2. Hiển thị sách đã mượn của học viên");
+            System.out.println("3. Cập nhật ngày mượn sách");
             System.out.println("0. Thoát");
             System.out.print("Chọn chức năng: ");
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
 
             switch (choice) {
                 case 1:
-                    System.out.print("Nhập tên học viên (hoặc phần tên): ");
-                    String name = scanner.nextLine();
-                    System.out.print("Nhập email học viên (hoặc phần email): ");
-                    String email = scanner.nextLine();
-
-                    List<Student> foundStudents = studentService.searchStudents(name, email);
-                    if (foundStudents.isEmpty()) {
-                        System.out.println("Không tìm thấy học viên nào.");
-                    } else {
-                        System.out.println("Kết quả tìm kiếm:");
-                        foundStudents.forEach(System.out::println);
-                    }
+                    rentBookController.rentBook();
+                    break;
+                case 2:
+                    rentBookController.showRentedBooks();
+                    break;
+                case 3:
+                    rentBookController.updateRentDate();
                     break;
                 case 0:
                     System.out.println("Thoát chương trình.");
@@ -188,9 +111,8 @@ public class View {
         }
     }
 
-
     // bài 8
-    public void statisticalStudent() throws SQLException {
+    private void statisticalStudentView() throws SQLException {
         while (true) {
             System.out.println("\n=== THỐNG KÊ HỌC VIÊN ===");
             System.out.println("1. Đếm số lượng học viên");
@@ -202,24 +124,13 @@ public class View {
 
             switch (choice) {
                 case 1:
-                    int count = studentService.getStudentCount();
-                    System.out.println("Số lượng học viên: " + count);
+                    studentController.getCount();
                     break;
                 case 2:
-                    Student minDOBStudent = studentService.getStudentWithMinDOB();
-                    if (minDOBStudent != null) {
-                        System.out.println("Học viên có ngày sinh nhỏ nhất: " + minDOBStudent);
-                    } else {
-                        System.out.println("Không tìm thấy học viên.");
-                    }
+                    studentController.getMinDOB();
                     break;
                 case 3:
-                    Student maxDOBStudent = studentService.getStudentWithMaxDOB();
-                    if (maxDOBStudent != null) {
-                        System.out.println("Học viên có ngày sinh lớn nhất: " + maxDOBStudent);
-                    } else {
-                        System.out.println("Không tìm thấy học viên.");
-                    }
+                    studentController.getMaxDOB();
                     break;
                 case 0:
                     System.out.println("Thoát chương trình.");
@@ -231,109 +142,7 @@ public class View {
     }
 
 
-
-    public void getStudentsByPagination() throws SQLException {
-        final int PAGE_SIZE = 5;
-        int currentPage = 1;
-
-        while (true) {
-            int totalPages = studentService.getTotalPages(PAGE_SIZE);
-            System.out.println("\n=== Danh sách học viên ===");
-            List<Student> students = studentService.getStudentsByPagination(currentPage, PAGE_SIZE);
-            students.forEach(System.out::println);
-
-            System.out.println("\nTrang " + currentPage + " / " + totalPages);
-
-            System.out.println("\n1. Trang trước");
-            System.out.println("2. Trang tiếp theo");
-            System.out.println("3. Chọn trang số...");
-            System.out.println("0. Thoát");
-
-            System.out.print("Chọn chức năng: ");
-            int choice = scanner.nextInt();
-
-            switch (choice) {
-                case 1:
-                    if (currentPage > 1) {
-                        currentPage--;
-                    }
-                    break;
-                case 2:
-                    if (currentPage < totalPages) {
-                        currentPage++;
-                    }
-                    break;
-
-                case 3:
-                    System.out.print("Nhập số trang muốn xem (1 đến " + totalPages + "): ");
-                    int pageInput = scanner.nextInt();
-                    if (pageInput >= 1 && pageInput <= totalPages) {
-                        currentPage = pageInput;
-                    } else {
-                        System.out.println("Số trang không hợp lệ.");
-                    }
-                    break;
-                case 0:
-                    System.out.println("Thoát chương trình.");
-                    return;
-                default:
-                    System.out.println("Lựa chọn không hợp lệ.");
-            }
-        }
-    }
-
-    private void addStudent() {
-        scanner.nextLine(); // Consume newline
-        System.out.print("Nhập tên: ");
-        String name = scanner.nextLine();
-        System.out.print("Nhập email: ");
-        String email = scanner.nextLine();
-        System.out.print("Nhập ngày sinh (yyyy-mm-dd): ");
-        LocalDate dob = LocalDate.parse(scanner.nextLine());
-        Student student = new Student(name, email, dob);
-        studentService.insertStudent(student);
-    }
-
-    private void displayAllStudents() {
-        System.out.println("=== Toàn bộ danh sách học viên ===");
-        studentService.getAllStudents().forEach(System.out::println);
-    }
-
-    private void searchStudentByName() {
-        scanner.nextLine(); // Consume newline
-        System.out.print("Nhập tên cần tìm: ");
-        String keyword = scanner.nextLine();
-        System.out.println("\n=== Học viên có tên chứa '" + keyword + "' ===");
-        studentService.getStudentsByName(keyword).forEach(System.out::println);
-    }
-
-    private void displayStudentsSortedByDOB() {
-        System.out.println("\n=== Danh sách học viên theo ngày sinh tăng dần ===");
-        studentService.getStudentsSortedByDOB().forEach(System.out::println);
-    }
-
-    private void updateStudentEmail() {
-        System.out.print("Nhập ID học viên: ");
-        int id = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-        System.out.print("Nhập email mới: ");
-        String newEmail = scanner.nextLine();
-        studentService.updateStudentEmail(id, newEmail);
-    }
-
-    private void deleteStudent() {
-        System.out.print("Nhập ID học viên cần xóa: ");
-        int deleteId = scanner.nextInt();
-        System.out.println("Bạn có muốn xoá học viên có ID = " + deleteId + " không? (Y/N)");
-        scanner.nextLine(); // Consume newline
-        String confirm = scanner.nextLine();
-        if (confirm.equalsIgnoreCase("Y"))
-            studentService.deleteStudent(deleteId);
-        else
-            System.out.println("Không xoá học viên nào.");
-    }
-
-    private void showBookManagement() {
+    private void bookManagementView() {
         System.out.println("=== QUẢN LÝ SÁCH ===");
         System.out.println("1. Thêm sách");
         System.out.println("2. Hiển thị toàn bộ sách theo ngày");
@@ -343,53 +152,20 @@ public class View {
         int bookChoice = scanner.nextInt();
         switch (bookChoice) {
             case 1:
-                addBook();
+                bookController.addBook();
                 break;
             case 2:
-                displayAllBooks();
+                bookController.displayAllBooks();
                 break;
             case 3:
-                updateBookTitle();
+                bookController.updateBookTitle();
                 break;
             case 4:
-                deleteBooksByTitle();
+                bookController.deleteBooksByTitle();
                 break;
             default:
                 System.out.println("Lựa chọn không hợp lệ.");
         }
-    }
-
-    private void addBook() {
-        scanner.nextLine(); // Consume newline
-        System.out.print("Nhập tên sách: ");
-        String title = scanner.nextLine();
-        System.out.print("Nhập tên tác giả: ");
-        String author = scanner.nextLine();
-        System.out.print("Nhập ngày xuất bản (yyyy-mm-dd): ");
-        LocalDate publishedDate = LocalDate.parse(scanner.nextLine());
-        Book newBook = new Book(title, author, publishedDate);
-        bookService.addBook(newBook);
-    }
-
-    private void displayAllBooks() {
-        System.out.println("=== Toàn bộ danh sách sách ===");
-        bookService.getAllBooksSorted().forEach(System.out::println);
-    }
-
-    private void updateBookTitle() {
-        System.out.print("Nhập ID sách cần cập nhật: ");
-        int bookId = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-        System.out.print("Nhập tên mới: ");
-        String newTitle = scanner.nextLine();
-        bookService.updateBookTitle(bookId, newTitle);
-    }
-
-    private void deleteBooksByTitle() {
-        scanner.nextLine(); // Consume newline
-        System.out.print("Nhập từ khóa cần xóa: ");
-        String deleteKeyword = scanner.nextLine();
-        bookService.deleteBooksContaining(deleteKeyword);
     }
 }
 
